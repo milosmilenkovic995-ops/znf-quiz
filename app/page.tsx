@@ -375,7 +375,14 @@ function Footer() {
 
         {footerColumns.map((column) => (
           <div key={column.title}>
-            <h3 style={{ marginBottom: 20, fontSize: 20, fontWeight: 800, color: "#fff" }}>
+            <h3
+              style={{
+                marginBottom: 20,
+                fontSize: 20,
+                fontWeight: 800,
+                color: "#fff",
+              }}
+            >
               {column.title}
             </h3>
             <div style={{ display: "grid", gap: 12, fontSize: 17 }}>
@@ -474,7 +481,10 @@ function ProductCard({
 
         <div style={{ marginTop: 20, display: "grid", gap: 12 }}>
           {product.bullets.map((bullet) => (
-            <div key={bullet} style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
+            <div
+              key={bullet}
+              style={{ display: "flex", gap: 12, alignItems: "flex-start" }}
+            >
               <div
                 style={{
                   marginTop: 4,
@@ -535,7 +545,9 @@ function RecipeCard({
         boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
       }}
     >
-      <div style={{ aspectRatio: "4 / 3", overflow: "hidden", background: "#efe7db" }}>
+      <div
+        style={{ aspectRatio: "4 / 3", overflow: "hidden", background: "#efe7db" }}
+      >
         <img
           src={recipe.image}
           alt={recipe.title}
@@ -584,10 +596,49 @@ export default function Home() {
     if (step > 0) setStep((prev) => prev - 1);
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!email.trim()) return;
-    setSubmitted(true);
+
+    try {
+      await fetch(
+        `https://a.klaviyo.com/client/subscriptions/?company_id=${process.env.NEXT_PUBLIC_KLAVIYO_SITE_ID}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            revision: "2024-06-15",
+          },
+          body: JSON.stringify({
+            data: {
+              type: "subscription",
+              attributes: {
+                profile: {
+                  data: {
+                    type: "profile",
+                    attributes: {
+                      email: email.trim(),
+                    },
+                  },
+                },
+              },
+              relationships: {
+                list: {
+                  data: {
+                    type: "list",
+                    id: process.env.NEXT_PUBLIC_KLAVIYO_LIST_ID,
+                  },
+                },
+              },
+            },
+          }),
+        }
+      );
+
+      setSubmitted(true);
+    } catch (error) {
+      alert("Something went wrong");
+    }
   };
 
   return (
@@ -595,7 +646,14 @@ export default function Home() {
       <Header />
 
       <section style={{ borderBottom: "1px solid #e6ddd1", background: "#fff" }}>
-        <div style={{ maxWidth: 960, margin: "0 auto", padding: "64px 24px", textAlign: "center" }}>
+        <div
+          style={{
+            maxWidth: 960,
+            margin: "0 auto",
+            padding: "64px 24px",
+            textAlign: "center",
+          }}
+        >
           <div
             style={{
               display: "inline-block",
@@ -610,7 +668,9 @@ export default function Home() {
           >
             4 Quick Questions
           </div>
-          <h1 style={{ marginTop: 20, fontSize: 52, fontWeight: 700, lineHeight: 1.1 }}>
+          <h1
+            style={{ marginTop: 20, fontSize: 52, fontWeight: 700, lineHeight: 1.1 }}
+          >
             Find Your MCT Product Match
           </h1>
           <p
@@ -622,8 +682,8 @@ export default function Home() {
               color: "#5f5347",
             }}
           >
-            Answer 4 quick questions to get your personalized product recommendation,
-            recipe ideas, and a first-order offer.
+            Answer 4 quick questions to get your personalized product
+            recommendation, recipe ideas, and a first-order offer.
           </p>
         </div>
       </section>
@@ -688,7 +748,9 @@ export default function Home() {
               >
                 Back
               </button>
-              <div style={{ fontSize: 14, color: "#7a6f63" }}>Takes less than 30 seconds</div>
+              <div style={{ fontSize: 14, color: "#7a6f63" }}>
+                Takes less than 30 seconds
+              </div>
             </div>
           </div>
         )}
@@ -720,14 +782,29 @@ export default function Home() {
               <h2 style={{ marginTop: 20, fontSize: 42, fontWeight: 700 }}>
                 Unlock Your Personalized Results
               </h2>
-              <p style={{ marginTop: 20, lineHeight: 1.8, color: "#5f5347", fontSize: 18 }}>
+              <p
+                style={{
+                  marginTop: 20,
+                  lineHeight: 1.8,
+                  color: "#5f5347",
+                  fontSize: 18,
+                }}
+              >
                 Enter your email to see your best product match, unlock recipe ideas,
                 and get your first-order offer.
               </p>
             </div>
 
             <form onSubmit={handleSubmit} style={{ maxWidth: 640, margin: "32px auto 0" }}>
-              <label style={{ display: "block", marginBottom: 8, fontSize: 14, fontWeight: 500, color: "#5f5347" }}>
+              <label
+                style={{
+                  display: "block",
+                  marginBottom: 8,
+                  fontSize: 14,
+                  fontWeight: 500,
+                  color: "#5f5347",
+                }}
+              >
                 Email address
               </label>
               <input
@@ -805,7 +882,15 @@ export default function Home() {
               <h2 style={{ marginTop: 20, fontSize: 42, fontWeight: 700 }}>
                 {result.primary.name}
               </h2>
-              <p style={{ marginTop: 16, maxWidth: 760, lineHeight: 1.8, color: "#5f5347", fontSize: 18 }}>
+              <p
+                style={{
+                  marginTop: 16,
+                  maxWidth: 760,
+                  lineHeight: 1.8,
+                  color: "#5f5347",
+                  fontSize: 18,
+                }}
+              >
                 {result.reason}
               </p>
             </div>
